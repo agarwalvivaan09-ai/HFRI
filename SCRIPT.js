@@ -1,8 +1,5 @@
 'use strict';
 
-/* =====================================================================
-   1. SITE SETTINGS  (edit this block, nothing else needs changing)
-   ===================================================================== */
 const CONFIG = {
   email: 'agarwalvivaan09@gmail.com',
 
