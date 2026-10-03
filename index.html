@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HFRI: Household Financial Resilience Index by Vivaan Agarwal</title>
+  <meta name="description" content="An interactive calculator for the Household Financial Resilience Index (HFRI), an independent research project by Vivaan Agarwal, La Martiniere for Boys, Kolkata.">
+  <meta name="theme-color" content="#11161D">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#calculator">Skip to the calculator</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="HFRI, back to the top">
+      <span class="brand-mark">HFRI</span>
+      <span class="brand-name">Vivaan Agarwal</span>
+    </a>
+    <nav class="nav">
+  <a href="#project">Project</a>
+  <a href="#research">Research</a>
+  <a href="#method">Method</a>
+  <a href="#limits">Limits</a>
+  <a href="#contact">Contact</a>
+  <a class="nav-cta" href="#calculator">Calculator</a>
+</nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ OPENING ============ -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1 id="hero-title">How big a financial shock can a household absorb?</h1>
+            <p class="lead">
+              The Household Financial Resilience Index (HFRI) turns savings, debt, emergency cash and
+              spending stability into a single score from 0 to 100. Every formula, anchor point and
+              assumption behind the score is published on this page, and you can test it on your own numbers.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#calculator">Calculate a score</a>
+              <a class="btn btn-quiet" id="link-paper-hero" href="#project">About the research</a>
+            </div>
+          </div>
+
+          <aside class="signature" aria-label="Author">
+            <p class="signature-name">Vivaan Agarwal</p>
+            <p class="signature-line">Grade 12, La Martiniere for Boys, Kolkata</p>
+            <p class="signature-line">Independent research project</p>
+          </aside>
+        </div>
+
+        <figure class="hero-figure">
+          <figcaption>
+            Where 1,000 simulated households scored. The coloured bands are the paper's shock-survival bands.
+          </figcaption>
+          <div id="hero-ruler"></div>
+          <ul class="legend" id="hero-legend" aria-label="Score bands"></ul>
+          <noscript><p class="noscript">This page needs JavaScript to draw the chart and run the calculator.</p></noscript>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ PROJECT ============ -->
+    <section class="section" id="project" aria-labelledby="project-title">
+      <div class="wrap section-grid">
+        <div class="section-head">
+          <h2 id="project-title">The project</h2>
+          <p>A transparent index, tested on a simulated population.</p>
+        </div>
+
+        <div class="section-body prose">
+          <blockquote class="question">
+            Can a transparent mathematical index combining savings, debt, emergency liquidity, and
+            expenditure stability provide a meaningful measure of household financial resilience?
+          </blockquote>
+
+          <p>
+            Income alone does not show how well a household can cope with a bad month. Two families with the
+            same salary can be in very different positions if one holds several months of cash and little debt,
+            while the other has almost no buffer and heavy loan repayments. HFRI treats resilience as the
+            capacity to absorb a financial shock while still meeting essential obligations, and measures it
+            across four dimensions: Savings Strength, Debt Sustainability, Emergency Coverage and Expense Stability.
+          </p>
+          <p>
+            The research had two phases. Phase I built the scoring functions, checked how the index behaves
+            internally and tested how much the rankings depend on the weights. Phase II compared the index with an
+            ONS-style liquidity benchmark and put the simulated households through an income shock and a spending shock.
+          </p>
+
+          <h3>At a glance</h3>
+          <dl class="ledger">
+            <div><dt>Population</dt><dd>1,000 simulated households observed for 12 months: 12,000 household-month observations.</dd></div>
+            <div><dt>Score range</dt><dd>16.27 to 97.24, with a median of 82.04 and a mean of 75.84.</dd></div>
+            <div><dt>Weights</dt><dd>25% on each of the four dimensions. Inside Debt Sustainability, 40% on debt-to-income and 60% on debt-service-to-income.</dd></div>
+            <div><dt>Weight sensitivity</dt><dd>Each dimension was set anywhere from 10% to 40%. The lowest rank correlation with the baseline was 0.9707.</dd></div>
+            <div><dt>Shock test</dt><dd>75.9% of households could cover a 25% income fall for three months from liquid savings. HFRI correlated 0.8729 with that outcome.</dd></div>
+            <div><dt>Reproducibility</dt><dd>Python, run in Google Colab, with a fixed random seed of 42.</dd></div>
+          </dl>
+
+          <aside class="arbor" aria-labelledby="arbor-title">
+            <h3 id="arbor-title">Also used in Arbor</h3>
+            <p>
+              The same HFRI scoring model is used in Arbor, a project by Vivaan Agarwal.
+              <span id="arbor-link-slot">The link will be added soon.</span>
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+ <section class="section" id="research" aria-labelledby="research-title">
+  <div class="wrap section-grid">
+    <div class="section-head">
+      <h2 id="research-title">Research materials</h2>
+      <p>Read the paper, inspect the code, and explore the mathematical models behind HFRI.</p>
+    </div>
+
+    <div class="section-body prose">
+      <div class="card-grid">
+
+        <a class="info-card" id="link-paper" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="card-kicker">Paper</span>
+          <h3>Read the research paper ↗</h3>
+          <p>Full methodology, calibration, simulation results, stress tests, limitations, and conclusions.</p>
+        </a>
+
+        <a class="info-card" id="link-code" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="card-kicker">Reproducibility</span>
+          <h3>Open the Python notebook ↗</h3>
+          <p>View the simulation and calculations used to generate the model results.</p>
+        </a>
+
+        <a class="info-card" id="link-arbor" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="card-kicker">Related project</span>
+          <h3>Explore Arbor ↗</h3>
+          <p>The financial operating system project that also uses the HFRI scoring model.</p>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</section>
+    <!-- ============ METHOD ============ -->
+    <section class="section" id="method" aria-labelledby="method-title">
+      <div class="wrap section-grid">
+        <div class="section-head">
+          <h2 id="method-title">How the score is built</h2>
+          <p>Five indicators, each turned into a 0 to 100 score by a function fitted to published landmarks.</p>
+        </div>
+
+        <div class="section-body prose">
+          <div class="formula-block" role="group" aria-label="The HFRI formula">
+            <p class="formula">HFRI = 0.25·S + 0.25·D + 0.25·E + 0.25·X</p>
+            <p class="formula">D = 0.40·D<sub>DTI</sub> + 0.60·D<sub>DSTI</sub></p>
+            <p class="formula-note">
+              S savings, D debt, E emergency coverage, X expense stability. Higher is always more resilient.
+              Equal weights are a transparent baseline, not a claim that each dimension matters equally in every household.
+            </p>
+          </div>
+
+          <div class="accordion">
+            <details open>
+              <summary>Savings Strength</summary>
+              <div class="detail-body">
+                <p class="formula">SR = (Y − C) / Y</p>
+                <p class="formula">S = 100·(1 − e<sup>−5.89681·(SR + 0.10)</sup>)&nbsp; for SR &gt; −0.10, otherwise 0</p>
+                <p>Rewards a surplus, with diminishing returns as the savings rate rises. Y is annual disposable income and C is annual spending.</p>
+                <table class="anchors">
+                  <caption>Calibration anchors</caption>
+                  <thead><tr><th scope="col">Savings rate</th><td>−10%</td><td>−4%</td><td>0%</td><td>3%</td><td>7%</td><td>12%</td><td>17%</td><td>25%</td><td>30%</td></tr></thead>
+                  <tbody><tr><th scope="row">Score</th><td>0</td><td>25</td><td>50</td><td>55</td><td>62</td><td>70</td><td>77</td><td>88</td><td>95</td></tr></tbody>
+                </table>
+              </div>
+            </details>
+
+            <details>
+              <summary>Debt Sustainability</summary>
+              <div class="detail-body">
+                <p class="formula">DTI = Debt / Y&nbsp;&nbsp;&nbsp; DSTI = Annual debt service / Y</p>
+                <p class="formula">D<sub>DTI</sub> = 100·e<sup>−0.0573534·DTI<sup>2.13509</sup></sup></p>
+                <p class="formula">D<sub>DSTI</sub> = −521.45598·DSTI² + 9.08245·DSTI + 100.00523&nbsp; (kept between 0 and 100)</p>
+                <p>Two indicators because debt hurts in two ways: the size of the stock (DTI) and the repayment burden today (DSTI). Repayments get the larger weight because they hit monthly cash flow directly.</p>
+                <table class="anchors">
+                  <caption>DTI anchors</caption>
+                  <thead><tr><th scope="col">DTI</th><td>0%</td><td>250%</td><td>300%</td><td>350%</td><td>450%</td><td>600%</td></tr></thead>
+                  <tbody><tr><th scope="row">Score</th><td>100</td><td>65</td><td>55</td><td>45</td><td>25</td><td>5</td></tr></tbody>
+                </table>
+                <table class="anchors">
+                  <caption>DSTI anchors</caption>
+                  <thead><tr><th scope="col">DSTI</th><td>0%</td><td>25%</td><td>30%</td><td>35%</td><td>40%</td></tr></thead>
+                  <tbody><tr><th scope="row">Score</th><td>100</td><td>70</td><td>55</td><td>40</td><td>20</td></tr></tbody>
+                </table>
+              </div>
+            </details>
+
+            <details>
+              <summary>Emergency Coverage</summary>
+              <div class="detail-body">
+                <p class="formula">EC = Liquid savings / Monthly essential spending</p>
+                <p class="formula">E = 100·(1 − e<sup>−0.37028·EC<sup>0.901391</sup></sup>)</p>
+                <p>Counts only money that can be reached quickly. The first few months of cover add the most protection, and later months add less. Three months is a common benchmark in the Federal Reserve literature, used here as a landmark and not a pass mark.</p>
+                <table class="anchors">
+                  <caption>Calibration anchors</caption>
+                  <thead><tr><th scope="col">Months</th><td>0</td><td>0.6</td><td>1</td><td>3</td><td>6</td><td>9</td><td>12</td></tr></thead>
+                  <tbody><tr><th scope="row">Score</th><td>0</td><td>20</td><td>30</td><td>65</td><td>85</td><td>92</td><td>96</td></tr></tbody>
+                </table>
+                <p class="small">The 9 and 12 month points are researcher-defined extensions, not literature thresholds.</p>
+              </div>
+            </details>
+
+            <details>
+              <summary>Expense Stability</summary>
+              <div class="detail-body">
+                <p class="formula">CV = Standard deviation of monthly spending / Mean monthly spending</p>
+                <p class="formula">X = 100·e<sup>−3.13957·CV<sup>1.30837</sup></sup></p>
+                <p>Spending that swings a lot is harder to plan around. The main landmark, CV near 0.33, comes from JPMorgan Chase Institute evidence on spending volatility. This is the most exploratory dimension, because lumpy spending is not always a sign of weakness.</p>
+                <table class="anchors">
+                  <caption>Calibration anchors</caption>
+                  <thead><tr><th scope="col">CV</th><td>0</td><td>0.05</td><td>0.10</td><td>0.20</td><td>0.30</td><td>0.33</td><td>0.40</td><td>0.50</td><td>0.60</td><td>0.80</td><td>1.00</td></tr></thead>
+                  <tbody><tr><th scope="row">Score</th><td>100</td><td>92</td><td>83</td><td>68</td><td>53</td><td>50</td><td>40</td><td>28</td><td>19</td><td>8</td><td>3</td></tr></tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+
+          <p>
+            The fitted curves reproduce the anchor points closely (R² between 0.9876 and 0.9997), but those
+            figures only describe how well each curve matches points chosen by the researcher. They do not show
+            that a given score corresponds to a real probability of financial distress.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CALCULATOR ============ -->
+    <section class="section section-calc" id="calculator" aria-labelledby="calc-title">
+      <div class="wrap">
+        <div class="calc-head">
+          <h2 id="calc-title">Calculate a household's HFRI</h2>
+          <p>
+            Enter monthly figures in rupees. The score updates as you type. Everything is calculated in your
+            browser, and nothing you enter is sent or stored anywhere.
+          </p>
+        </div>
+
+        <div class="calc-grid">
+          <!-- ---- inputs ---- -->
+          <form class="calc-form" id="calc-form" novalidate autocomplete="off">
+            <div class="examples">
+              <p class="examples-label" id="examples-label">Start from an example</p>
+              <div class="examples-row" role="group" aria-labelledby="examples-label">
+                <button type="button" class="chip" data-preset="cushion">Salaried, with a cushion</button>
+                <button type="button" class="chip" data-preset="stretched">Stretched by loans</button>
+                <button type="button" class="chip" data-preset="gig">Gig work, thin buffer</button>
+                <button type="button" class="chip" data-preset="saver">Strong saver</button>
+              </div>
+            </div>
+
+            <fieldset class="group">
+              <legend>Income</legend>
+              <div class="field">
+                <label for="income">Monthly take-home income</label>
+                <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                  <input id="income" type="text" inputmode="decimal" placeholder="60,000"></div>
+                <p class="hint">After tax, from all regular sources.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="group">
+              <legend>Spending</legend>
+              <div class="segmented" role="radiogroup" aria-label="How to enter spending">
+                <input type="radio" id="mode-quick" name="spendMode" value="quick" checked>
+                <label for="mode-quick">Average and pattern</label>
+                <input type="radio" id="mode-detailed" name="spendMode" value="detailed">
+                <label for="mode-detailed">Last six months</label>
+              </div>
+
+              <div id="spend-quick">
+                <div class="field">
+                  <label for="spending">Average monthly spending</label>
+                  <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                    <input id="spending" type="text" inputmode="decimal" placeholder="38,000"></div>
+                  <p class="hint">Everything you spend except loan repayments, which are counted under debt below.</p>
+                </div>
+                <div class="field">
+                  <label for="steadiness">How much does spending change month to month?</label>
+                  <select id="steadiness">
+                    <option value="0.05">Barely at all (CV 0.05)</option>
+                    <option value="0.10">Slightly (CV 0.10)</option>
+                    <option value="0.20" selected>Some swings (CV 0.20)</option>
+                    <option value="0.33">Quite variable (CV 0.33, the paper's landmark)</option>
+                    <option value="0.50">Very variable (CV 0.50)</option>
+                    <option value="0.80">Extremely variable (CV 0.80)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="spend-detailed" hidden>
+                <p class="hint">Enter total spending for each of the last six months, excluding loan repayments.</p>
+                <div class="months">
+                  <div class="field"><label for="m1">Month 1</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m1" type="text" inputmode="decimal"></div></div>
+                  <div class="field"><label for="m2">Month 2</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m2" type="text" inputmode="decimal"></div></div>
+                  <div class="field"><label for="m3">Month 3</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m3" type="text" inputmode="decimal"></div></div>
+                  <div class="field"><label for="m4">Month 4</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m4" type="text" inputmode="decimal"></div></div>
+                  <div class="field"><label for="m5">Month 5</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m5" type="text" inputmode="decimal"></div></div>
+                  <div class="field"><label for="m6">Month 6</label><div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span><input id="m6" type="text" inputmode="decimal"></div></div>
+                </div>
+                <p class="readout" id="months-readout" aria-live="polite">Enter all six months to see the average and variation.</p>
+              </div>
+
+              <div class="field">
+                <label for="essential">Essential monthly spending</label>
+                <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                  <input id="essential" type="text" inputmode="decimal" placeholder="26,000"></div>
+                <p class="hint">The part you could not skip: rent, food, utilities, school fees, transport, insurance. Leave out loan repayments.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="group">
+              <legend>Savings</legend>
+              <div class="field">
+                <label for="liquid">Liquid savings</label>
+                <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                  <input id="liquid" type="text" inputmode="decimal" placeholder="1,80,000"></div>
+                <p class="hint">Money you could reach within days: bank balances, cash, liquid funds. Leave out property, gold and long-term investments.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="group">
+              <legend>Debt</legend>
+              <div class="field">
+                <label for="debt">Total outstanding debt</label>
+                <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                  <input id="debt" type="text" inputmode="decimal" placeholder="0"></div>
+                <p class="hint">Home, vehicle, education and personal loans, plus card balances. Leave blank for none.</p>
+              </div>
+              <div class="field">
+                <label for="debtService">Monthly loan repayments</label>
+                <div class="input-wrap"><span class="prefix" aria-hidden="true">₹</span>
+                  <input id="debtService" type="text" inputmode="decimal" placeholder="0"></div>
+                <p class="hint">All EMIs and minimum card payments combined. Leave blank for none.</p>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="calc-submit">Show my score</button>
+              <button type="reset" class="btn btn-quiet" id="calc-reset">Clear</button>
+            </div>
+          </form>
+
+          <!-- ---- results ---- -->
+          <div class="results" id="results" aria-live="polite">
+            <div class="results-empty" id="results-empty">
+              <h3>Your score will appear here</h3>
+              <p id="empty-message">Enter monthly income, spending, essential spending and liquid savings to begin, or start from one of the examples.</p>
+            </div>
+
+            <div class="results-body" id="results-body" hidden>
+              <div class="score-head">
+                <p class="score-figure" aria-label="HFRI score"><span id="score-value">0.0</span><span class="score-out">/ 100</span></p>
+                <div class="score-meta">
+                  <p class="band-label" id="band-label"></p>
+                  <p id="band-text"></p>
+                  <p class="muted" id="percentile-text"></p>
+                </div>
+              </div>
+
+              <div id="result-ruler"></div>
+
+              <ul class="notices" id="notices"></ul>
+
+              <h3>The four dimensions</h3>
+              <ul class="dims" id="dims">
+                <li data-dim="S"><div class="dim-top"><span class="dim-name">Savings Strength</span><span class="dim-score" id="dim-S-score"></span></div><div class="track"><div class="fill" id="dim-S-fill"></div></div><p class="dim-note" id="dim-S-note"></p></li>
+                <li data-dim="D"><div class="dim-top"><span class="dim-name">Debt Sustainability</span><span class="dim-score" id="dim-D-score"></span></div><div class="track"><div class="fill" id="dim-D-fill"></div></div><p class="dim-note" id="dim-D-note"></p></li>
+                <li data-dim="E"><div class="dim-top"><span class="dim-name">Emergency Coverage</span><span class="dim-score" id="dim-E-score"></span></div><div class="track"><div class="fill" id="dim-E-fill"></div></div><p class="dim-note" id="dim-E-note"></p></li>
+                <li data-dim="X"><div class="dim-top"><span class="dim-name">Expense Stability</span><span class="dim-score" id="dim-X-score"></span></div><div class="track"><div class="fill" id="dim-X-fill"></div></div><p class="dim-note" id="dim-X-note"></p></li>
+              </ul>
+
+              <h3>What would move the score most</h3>
+              <p class="muted">Illustrative what-ifs from the same formulas. They show sensitivity, not advice.</p>
+              <ol class="levers" id="levers"></ol>
+
+              <h3>Stress test</h3>
+              <div class="shock-controls">
+                <div class="segmented" role="radiogroup" aria-label="Type of shock">
+                  <input type="radio" id="shock-income" name="shockType" value="income" checked>
+                  <label for="shock-income">Income falls</label>
+                  <input type="radio" id="shock-spending" name="shockType" value="spending">
+                  <label for="shock-spending">Spending rises</label>
+                </div>
+                <div class="shock-selects">
+                  <label for="shock-pct">By</label>
+                  <select id="shock-pct">
+                    <option value="0.10">10%</option>
+                    <option value="0.25" selected>25%</option>
+                    <option value="0.40">40%</option>
+                    <option value="0.50">50%</option>
+                  </select>
+                  <label for="shock-months">for</label>
+                  <select id="shock-months">
+                    <option value="1">1 month</option>
+                    <option value="3" selected>3 months</option>
+                    <option value="6">6 months</option>
+                    <option value="12">12 months</option>
+                  </select>
+                </div>
+              </div>
+              <div class="shock-out" id="shock-out"></div>
+
+              <details class="curves-wrap">
+                <summary>See where each indicator lands on its scoring curve</summary>
+                <div class="curves" id="curves"></div>
+                <p class="small">Hollow dots are the calibration anchors from the paper. The yellow dot is this household.</p>
+              </details>
+
+              <div class="result-actions">
+                <button type="button" class="btn btn-quiet" id="copy-summary">Copy a summary</button>
+                <button type="button" class="btn btn-quiet" id="print-result">Print or save as PDF</button>
+                <span class="copy-status" id="copy-status" role="status"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LIMITS ============ -->
+    <section class="section" id="limits" aria-labelledby="limits-title">
+      <div class="wrap section-grid">
+        <div class="section-head">
+          <h2 id="limits-title">What HFRI is not</h2>
+          <p>The paper's own conclusion is that HFRI is coherent and transparent, not yet validated.</p>
+        </div>
+        <div class="section-body prose">
+          <ul class="plain-list">
+            <li><strong>The households are simulated.</strong> The 1,000 households are artificial and are not a representative sample of Indian families. The score distribution above describes the model, not a population.</li>
+            <li><strong>The anchors and weights are researcher-defined.</strong> They are informed by central bank and survey literature, but they were not estimated from observed financial outcomes.</li>
+            <li><strong>The shock test is partly circular.</strong> Liquid savings feed both the Emergency Coverage score and the shock-survival check, so a strong link between HFRI and survival is partly built in.</li>
+            <li><strong>Expense Stability is exploratory.</strong> A volatile budget is not always a weak one.</li>
+            <li><strong>This calculator goes beyond the paper.</strong> The paper tested the formulas on simulated households. Using them on a real household's numbers is an extension that has not been tested against real outcomes, and the cash-flow stress test shown above is an addition that is not in the paper.</li>
+            <li><strong>It is not financial advice.</strong> A score is a way to compare financial positions. A score of 70 is not a verdict that a household is safe, and a score of 40 is not a verdict that it is not.</li>
+          </ul>
+          <p>The next step in the research is to test HFRI against real household data and see whether low scores go with missed payments, borrowing and forced asset sales.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="wrap section-grid">
+        <div class="section-head">
+          <h2 id="contact-title">About the author</h2>
+        </div>
+        <div class="section-body prose">
+          <p>
+            <strong>Vivaan Agarwal</strong> is a grade 12 student at La Martiniere for Boys in Kolkata.
+            HFRI is his independent research project on measuring household financial resilience with a
+            transparent mathematical model. Feedback, corrections and questions about the method are welcome.
+          </p>
+          <ul class="contact-list" id="contact-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© 2026 Vivaan Agarwal. HFRI is an educational research model and not financial advice. The calculator runs entirely in your browser.</p>
+    </div>
+  </footer>
+</body>
+</html>
