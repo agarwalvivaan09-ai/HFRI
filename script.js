@@ -15,7 +15,7 @@ const CONFIG = {
   links: {
   paper: 'https://agarwalvivaan09-ai.github.io/vivaan-dev/Household_Financial_Resiliance_Index_Vivaan_Agarwal%20(1).pdf',
   code: 'https://colab.research.google.com/drive/1uz_USmIzrsyE7bu4OyV3C2V7j-ltlNxL?usp=sharing',
-  arbor: 'https://agarwalvivaan09-ai.github.io/arbor-v2/',
+  arbor: 'https://agarwalvivaan09-ai.github.io/arbor-v4/',
   website: 'https://agarwalvivaan09-ai.github.io/vivaan-dev/index.html',
   github: 'https://github.com/agarwalvivaan09-ai',
   linkedin: 'https://www.linkedin.com/in/vivaan-agarwal-65663b39a/',
