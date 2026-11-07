@@ -200,7 +200,7 @@ Vivaan Agarwal
 Independent Researcher
 Economics · Finance · Quantitative Analysis
 
-* Website: https://agarwalvivaan09-ai.github.io/vivaan-dev/
+* Website: https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/
 * GitHub: https://github.com/agarwalvivaan09-ai
 
 License

@@ -7,13 +7,13 @@ const CONFIG = {
     { label: 'LinkedIn',  url: 'https://www.linkedin.com/in/vivaan-agarwal-65663b39a/' },
     { label: 'GitHub',    url: 'https://github.com/agarwalvivaan09-ai' },
     { label: 'Instagram', url: 'https://www.instagram.com/vivaan_agarwal__/' },
-    { label: 'Website',   url: 'https://agarwalvivaan09-ai.github.io/vivaan-dev/index.html' }
+    { label: 'Website',   url: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/' }
   ],
   links: {
-  paper: 'https://agarwalvivaan09-ai.github.io/vivaan-dev/Household_Financial_Resiliance_Index_Vivaan_Agarwal%20(1).pdf',
+  paper: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/Household_Financial_Resilience_Index_Vivaan_Agarwal.pdf',
   code: 'https://colab.research.google.com/drive/1uz_USmIzrsyE7bu4OyV3C2V7j-ltlNxL?usp=sharing',
   arbor: 'https://agarwalvivaan09-ai.github.io/arbor-v4/',
-  website: 'https://agarwalvivaan09-ai.github.io/vivaan-dev/index.html',
+  website: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/',
   github: 'https://github.com/agarwalvivaan09-ai',
   linkedin: 'https://www.linkedin.com/in/vivaan-agarwal-65663b39a/',
   instagram: 'https://www.instagram.com/vivaan_agarwal__/',
