@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HFRI: Household Financial Resilience Index by Vivaan Agarwal</title>
-  <meta name="description" content="An interactive calculator for the Household Financial Resilience Index (HFRI), an independent research project by Vivaan Agarwal, La Martiniere for Boys, Kolkata.">
+  <meta name="description" content="An interactive calculator for the Household Financial Resilience Index (HFRI) Version 2, an independent research project by Vivaan Agarwal, La Martiniere for Boys, Kolkata.">
   <meta name="theme-color" content="#11161D">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,8 +42,10 @@
             <h1 id="hero-title">How big a financial shock can a household absorb?</h1>
             <p class="lead">
               The Household Financial Resilience Index (HFRI) turns savings, debt, emergency cash and
-              spending stability into a single score from 0 to 100. Every formula, anchor point and
-              assumption behind the score is published on this page, and you can test it on your own numbers.
+              spending stability into a single score from 0 to 100. Version 2 has been tested on more than
+              12,000 real families from the U.S. Federal Reserve's Survey of Consumer Finances, and its weights
+              and score bands now come from that evidence. Every formula is published on this page, and you can
+              test it on your own numbers.
             </p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="#calculator">Calculate a score</a>
@@ -60,7 +62,8 @@
 
         <figure class="hero-figure">
           <figcaption>
-            Where 1,000 simulated households scored. The coloured bands are the paper's shock-survival bands.
+            Where real U.S. families score on the revised HFRI (Survey of Consumer Finances 2025). Each segment's
+            width is the share of families in that risk band.
           </figcaption>
           <div id="hero-ruler"></div>
           <ul class="legend" id="hero-legend" aria-label="Score bands"></ul>
@@ -74,13 +77,14 @@
       <div class="wrap section-grid">
         <div class="section-head">
           <h2 id="project-title">The project</h2>
-          <p>A transparent index, tested on a simulated population.</p>
+          <p>Version 1 built the index on simulated households. Version 2 tests it on real ones.</p>
         </div>
 
         <div class="section-body prose">
           <blockquote class="question">
-            Can a transparent mathematical index combining savings, debt, emergency liquidity, and
-            expenditure stability provide a meaningful measure of household financial resilience?
+            Does the HFRI correctly identify real families who are in financial trouble today, and real families
+            who will get into trouble in the future? And if its original weights are not the best ones, what
+            should they be?
           </blockquote>
 
           <p>
@@ -91,19 +95,27 @@
             across four dimensions: Savings Strength, Debt Sustainability, Emergency Coverage and Expense Stability.
           </p>
           <p>
-            The research had two phases. Phase I built the scoring functions, checked how the index behaves
-            internally and tested how much the rankings depend on the weights. Phase II compared the index with an
-            ONS-style liquidity benchmark and put the simulated households through an income shock and a spending shock.
+            Version 1 built the scoring curves and tested the index on 1,000 computer-generated households,
+            with each dimension counting for a quarter of the score. Version 2 checks it against real financial
+            trouble (missed loan payments, payday loans, bankruptcy and refused credit) reported by families in
+            three Federal Reserve surveys, including a panel that interviewed the same families before and after
+            the 2008 financial crisis.
+          </p>
+          <p>
+            The original index worked: among families with the lowest tenth of scores, about one in five were
+            badly behind on a loan payment, and among the highest tenth almost none were. But the four parts
+            should not count equally. Cash savings explain who is in trouble now, while debt explains who will get
+            into trouble later. A good index needs both.
           </p>
 
           <h3>At a glance</h3>
           <dl class="ledger">
-            <div><dt>Population</dt><dd>1,000 simulated households observed for 12 months: 12,000 household-month observations.</dd></div>
-            <div><dt>Score range</dt><dd>16.27 to 97.24, with a median of 82.04 and a mean of 75.84.</dd></div>
-            <div><dt>Weights</dt><dd>25% on each of the four dimensions. Inside Debt Sustainability, 40% on debt-to-income and 60% on debt-service-to-income.</dd></div>
-            <div><dt>Weight sensitivity</dt><dd>Each dimension was set anywhere from 10% to 40%. The lowest rank correlation with the baseline was 0.9707.</dd></div>
-            <div><dt>Shock test</dt><dd>75.9% of households could cover a 25% income fall for three months from liquid savings. HFRI correlated 0.8729 with that outcome.</dd></div>
-            <div><dt>Reproducibility</dt><dd>Python, run in Google Colab, with a fixed random seed of 42.</dd></div>
+            <div><dt>Data</dt><dd>Survey of Consumer Finances 2025 (4,360 families), SCF 2022 (4,595) and the 2007–09 SCF Panel (3,857), all with survey weights and multiple imputation.</dd></div>
+            <div><dt>New weights</dt><dd>Savings 5%, Debt 30%, Emergency 55%, Stability 10%. Inside Debt Sustainability, still 40% on debt-to-income and 60% on debt-service-to-income.</dd></div>
+            <div><dt>Trouble now</dt><dd>Average AUC across five signs of distress rose from 0.709 (equal weights) to 0.752.</dd></div>
+            <div><dt>Trouble later</dt><dd>Scores from 2007 predicted new delinquency by 2009 with an AUC of 0.725 (original) against 0.657 for emergency savings alone.</dd></div>
+            <div><dt>Held-out test</dt><dd>On families the weights were never chosen on, the revised index beat the original in 10 of 10 random splits.</dd></div>
+            <div><dt>Score bands</dt><dd>35, 55 and 70, set from real delinquency rates in 2025 and confirmed on the 2007–09 panel.</dd></div>
           </dl>
 
           <aside class="arbor" aria-labelledby="arbor-title">
@@ -130,13 +142,13 @@
         <a class="info-card" id="link-paper" href="#" target="_blank" rel="noopener noreferrer">
           <span class="card-kicker">Paper</span>
           <h3>Read the research paper ↗</h3>
-          <p>Full methodology, calibration, simulation results, stress tests, limitations, and conclusions.</p>
+          <p>Version 2: testing the index on real families, the new weights, the new bands, and their limits.</p>
         </a>
 
         <a class="info-card" id="link-code" href="#" target="_blank" rel="noopener noreferrer">
           <span class="card-kicker">Reproducibility</span>
-          <h3>Open the Python notebook ↗</h3>
-          <p>View the simulation and calculations used to generate the model results.</p>
+          <h3>View the analysis code ↗</h3>
+          <p>The Python pipeline that reproduces every number in the Version 2 paper from the Federal Reserve's public files.</p>
         </a>
 
         <a class="info-card" id="link-arbor" href="#" target="_blank" rel="noopener noreferrer">
@@ -154,16 +166,18 @@
       <div class="wrap section-grid">
         <div class="section-head">
           <h2 id="method-title">How the score is built</h2>
-          <p>Five indicators, each turned into a 0 to 100 score by a function fitted to published landmarks.</p>
+          <p>Five indicators, each turned into a 0 to 100 score by a curve fitted to published landmarks, then weighted using real-world evidence.</p>
         </div>
 
         <div class="section-body prose">
           <div class="formula-block" role="group" aria-label="The HFRI formula">
-            <p class="formula">HFRI = 0.25·S + 0.25·D + 0.25·E + 0.25·X</p>
+            <p class="formula">HFRI = 0.05·S + 0.30·D + 0.55·E + 0.10·X</p>
             <p class="formula">D = 0.40·D<sub>DTI</sub> + 0.60·D<sub>DSTI</sub></p>
             <p class="formula-note">
               S savings, D debt, E emergency coverage, X expense stability. Higher is always more resilient.
-              Equal weights are a transparent baseline, not a claim that each dimension matters equally in every household.
+              Version 1 used equal weights of 0.25. Version 2 tested all 1,770 combinations in 5% steps against real
+              distress and chose 5/30/55/10: among the top three, and almost exactly the average of the weights picked
+              in ten held-out tests (3.5 / 30.5 / 56 / 10).
             </p>
           </div>
 
@@ -233,9 +247,24 @@
           </div>
 
           <p>
-            The fitted curves reproduce the anchor points closely (R² between 0.9876 and 0.9997), but those
-            figures only describe how well each curve matches points chosen by the researcher. They do not show
-            that a given score corresponds to a real probability of financial distress.
+            The scoring curves are unchanged from Version 1 and reproduce their anchor points closely
+            (R² between 0.9876 and 0.9997). What changed is how the four scores are combined, and what the
+            final score means: the bands below are now tied to real delinquency rates.
+          </p>
+
+          <table class="bands-table">
+            <caption>Version 2 score bands</caption>
+            <thead><tr><th scope="col">Score</th><th scope="col">Band</th><th scope="col">Share of U.S. families</th><th scope="col">60+ days late (2025)</th><th scope="col">Newly 60+ days late by 2009</th></tr></thead>
+            <tbody>
+              <tr><td>0–35</td><td>High risk</td><td>13.4%</td><td>20.8%</td><td>15.1%</td></tr>
+              <tr><td>35–55</td><td>Elevated risk</td><td>30.0%</td><td>12.6%</td><td>8.4%</td></tr>
+              <tr><td>55–70</td><td>Moderate risk</td><td>15.8%</td><td>7.2%</td><td>4.9%</td></tr>
+              <tr><td>70–100</td><td>Low risk</td><td>40.8%</td><td>1.3%</td><td>1.0%</td></tr>
+            </tbody>
+          </table>
+          <p class="small">
+            Cut-offs are where the chance of being badly behind falls to twice the U.S. average (8.2%), to the average,
+            and to half the average, rounded to the nearest 5.
           </p>
         </div>
       </div>
@@ -371,6 +400,7 @@
                   <p class="band-label" id="band-label"></p>
                   <p id="band-text"></p>
                   <p class="muted" id="percentile-text"></p>
+                  <p class="muted" id="v1-text"></p>
                 </div>
               </div>
 
@@ -380,10 +410,10 @@
 
               <h3>The four dimensions</h3>
               <ul class="dims" id="dims">
-                <li data-dim="S"><div class="dim-top"><span class="dim-name">Savings Strength</span><span class="dim-score" id="dim-S-score"></span></div><div class="track"><div class="fill" id="dim-S-fill"></div></div><p class="dim-note" id="dim-S-note"></p></li>
-                <li data-dim="D"><div class="dim-top"><span class="dim-name">Debt Sustainability</span><span class="dim-score" id="dim-D-score"></span></div><div class="track"><div class="fill" id="dim-D-fill"></div></div><p class="dim-note" id="dim-D-note"></p></li>
-                <li data-dim="E"><div class="dim-top"><span class="dim-name">Emergency Coverage</span><span class="dim-score" id="dim-E-score"></span></div><div class="track"><div class="fill" id="dim-E-fill"></div></div><p class="dim-note" id="dim-E-note"></p></li>
-                <li data-dim="X"><div class="dim-top"><span class="dim-name">Expense Stability</span><span class="dim-score" id="dim-X-score"></span></div><div class="track"><div class="fill" id="dim-X-fill"></div></div><p class="dim-note" id="dim-X-note"></p></li>
+                <li data-dim="S"><div class="dim-top"><span class="dim-name">Savings Strength <span class="dim-weight" id="dim-S-weight"></span></span><span class="dim-score" id="dim-S-score"></span></div><div class="track"><div class="fill" id="dim-S-fill"></div></div><p class="dim-note" id="dim-S-note"></p></li>
+                <li data-dim="D"><div class="dim-top"><span class="dim-name">Debt Sustainability <span class="dim-weight" id="dim-D-weight"></span></span><span class="dim-score" id="dim-D-score"></span></div><div class="track"><div class="fill" id="dim-D-fill"></div></div><p class="dim-note" id="dim-D-note"></p></li>
+                <li data-dim="E"><div class="dim-top"><span class="dim-name">Emergency Coverage <span class="dim-weight" id="dim-E-weight"></span></span><span class="dim-score" id="dim-E-score"></span></div><div class="track"><div class="fill" id="dim-E-fill"></div></div><p class="dim-note" id="dim-E-note"></p></li>
+                <li data-dim="X"><div class="dim-top"><span class="dim-name">Expense Stability <span class="dim-weight" id="dim-X-weight"></span></span><span class="dim-score" id="dim-X-score"></span></div><div class="track"><div class="fill" id="dim-X-fill"></div></div><p class="dim-note" id="dim-X-note"></p></li>
               </ul>
 
               <h3>What would move the score most</h3>
@@ -439,18 +469,19 @@
       <div class="wrap section-grid">
         <div class="section-head">
           <h2 id="limits-title">What HFRI is not</h2>
-          <p>The paper's own conclusion is that HFRI is coherent and transparent, not yet validated.</p>
+          <p>Version 2 is tested on real families, but there are still clear limits to what a score can tell you.</p>
         </div>
         <div class="section-body prose">
           <ul class="plain-list">
-            <li><strong>The households are simulated.</strong> The 1,000 households are artificial and are not a representative sample of Indian families. The score distribution above describes the model, not a population.</li>
-            <li><strong>The anchors and weights are researcher-defined.</strong> They are informed by central bank and survey literature, but they were not estimated from observed financial outcomes.</li>
-            <li><strong>The shock test is partly circular.</strong> Liquid savings feed both the Emergency Coverage score and the shock-survival check, so a strong link between HFRI and survival is partly built in.</li>
-            <li><strong>Expense Stability is exploratory.</strong> A volatile budget is not always a weak one.</li>
-            <li><strong>This calculator goes beyond the paper.</strong> The paper tested the formulas on simulated households. Using them on a real household's numbers is an extension that has not been tested against real outcomes, and the cash-flow stress test shown above is an addition that is not in the paper.</li>
-            <li><strong>It is not financial advice.</strong> A score is a way to compare financial positions. A score of 70 is not a verdict that a household is safe, and a score of 40 is not a verdict that it is not.</li>
+            <li><strong>The evidence is American.</strong> The weights and bands come from U.S. families. HFRI uses ratios, so it can be applied to rupee figures, but the weights have not yet been tested on Indian household data.</li>
+            <li><strong>Some survey measures are stand-ins.</strong> Spending stability in 2025 and the saving habit in 2007 come from simple survey questions, not month-by-month records, and 2007 essential spending is assumed to be 70% of income. Better data could change the weights on these parts.</li>
+            <li><strong>One crisis.</strong> The "trouble later" test comes from 2007–09, a crisis driven by job losses and debt. A different kind of shock, such as fast-rising prices, could shift the balance between savings and debt.</li>
+            <li><strong>A small trade-off.</strong> On unseen families, the new weights are slightly worse than the original at predicting future trouble (by about 0.01 AUC). The calculator shows the Version 1 score alongside for that reason.</li>
+            <li><strong>Prediction, not cause.</strong> A low score predicts trouble. It does not prove that raising the score would prevent it.</li>
+            <li><strong>The cash-flow stress test is an extra.</strong> It is a simple illustration added to this calculator and is not part of either paper.</li>
+            <li><strong>It is not financial advice.</strong> A score of 70 is not a promise that a household is safe, and a score of 30 is not a verdict that it will fail.</li>
           </ul>
-          <p>The next step in the research is to test HFRI against real household data and see whether low scores go with missed payments, borrowing and forced asset sales.</p>
+          <p>The next step in the research is to test the revised HFRI on Indian household data.</p>
         </div>
       </div>
     </section>
@@ -465,7 +496,8 @@
           <p>
             <strong>Vivaan Agarwal</strong> is a grade 12 student at La Martiniere for Boys in Kolkata.
             HFRI is his independent research project on measuring household financial resilience with a
-            transparent mathematical model. Feedback, corrections and questions about the method are welcome.
+            transparent mathematical model, now tested on real household survey data. Feedback, corrections and
+            questions about the method are welcome.
           </p>
           <ul class="contact-list" id="contact-list"></ul>
         </div>

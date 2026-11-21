@@ -13,8 +13,10 @@ const CONFIG = {
     { label: 'Website',   url: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/' }
   ],
   links: {
-  paper: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/Household_Financial_Resilience_Index_Vivaan_Agarwal.pdf',
-  code: 'https://colab.research.google.com/drive/1uz_USmIzrsyE7bu4OyV3C2V7j-ltlNxL?usp=sharing',
+  paper: 'Household_Financial_Resilience_Index_Version_2.pdf',
+  paperV1: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/Household_Financial_Resilience_Index_Vivaan_Agarwal.pdf',
+  code: 'https://github.com/agarwalvivaan09-ai/HFRIV2',
+  notebookV1: 'https://colab.research.google.com/drive/1uz_USmIzrsyE7bu4OyV3C2V7j-ltlNxL?usp=sharing',
   arbor: 'https://agarwalvivaan09-ai.github.io/arbor-v4/',
   website: 'https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/',
   github: 'https://github.com/agarwalvivaan09-ai',
@@ -59,8 +61,13 @@ const HFRI = (() => {
   const scoreCV = (cv) =>
     100 * Math.exp(-3.13957 * Math.pow(Math.max(cv, 0), 1.30837));
 
-  const WEIGHTS = { S: 0.25, D: 0.25, E: 0.25, X: 0.25 };
+  // Version 2 weights, chosen by testing every 5% combination on real U.S. families
+  // (SCF 2025 and the 2007-09 SCF Panel) and checked on held-out households.
+  const WEIGHTS = { S: 0.05, D: 0.30, E: 0.55, X: 0.10 };
+  // Version 1 equal weights, kept for comparison.
+  const WEIGHTS_V1 = { S: 0.25, D: 0.25, E: 0.25, X: 0.25 };
   const DEBT_WEIGHTS = { dti: 0.40, dsti: 0.60 };
+  const combine = (w, s) => w.S * s.S + w.D * s.D + w.E * s.E + w.X * s.X;
 
   // inp: monthly figures in rupees plus cv
   function compute(inp) {
@@ -79,39 +86,29 @@ const HFRI = (() => {
     const E = scoreEC(ec);
     const X = scoreCV(cv);
 
-    const total = WEIGHTS.S * S + WEIGHTS.D * D + WEIGHTS.E * E + WEIGHTS.X * X;
-    return { sr, dti, dsti, ec, cv, S, D, E, X, dtiScore, dstiScore, total };
+    const parts = { S, D, E, X };
+    const total = combine(WEIGHTS, parts);
+    const totalV1 = combine(WEIGHTS_V1, parts);
+    return { sr, dti, dsti, ec, cv, S, D, E, X, dtiScore, dstiScore, total, totalV1 };
   }
 
-  // Bands come from how shock survival changed across score ranges in the simulation.
+  // Version 2 bands. Cut-offs sit where the chance of being 60+ days late on a loan
+  // payment falls to twice the U.S. average (8.2%), the average, and half the average.
+  // share: share of U.S. families in the band (SCF 2025)
+  // late2025: share 60+ days late in the past year (SCF 2025)
+  // late2009: share of 2007 families in the band who were newly 60+ days late by 2009
   const BANDS = [
-    { max: 60,       key: 'very-low',   label: 'Very low',        text: 'Very low simulated shock-absorption capacity.' },
-    { max: 65,       key: 'low',        label: 'Low',             text: 'Low simulated shock-absorption capacity.' },
-    { max: 70,       key: 'transition', label: 'Transition zone', text: 'In the transition zone, where simulated shock survival rises steeply. Small gains in liquidity matter most here.' },
-    { max: 75,       key: 'high',       label: 'High',            text: 'High simulated shock-absorption capacity.' },
-    { max: Infinity, key: 'very-high',  label: 'Very high',       text: 'Very high simulated shock-absorption capacity.' }
+    { from: 0,  max: 35,       key: 'high-risk',     label: 'High risk',     share: 13.4, late2025: 20.8, late2009: 15.1,
+      text: 'More than twice as likely as the average U.S. family to be badly behind on loan payments.' },
+    { from: 35, max: 55,       key: 'elevated-risk', label: 'Elevated risk', share: 30.0, late2025: 12.6, late2009: 8.4,
+      text: 'Above-average chance of being badly behind on loan payments.' },
+    { from: 55, max: 70,       key: 'moderate-risk', label: 'Moderate risk', share: 15.8, late2025: 7.2,  late2009: 4.9,
+      text: 'Close to the average chance of being badly behind on loan payments.' },
+    { from: 70, max: Infinity, key: 'low-risk',      label: 'Low risk',      share: 40.8, late2025: 1.3,  late2009: 1.0,
+      text: 'Well under half the average chance of being badly behind on loan payments.' }
   ];
   const bandFor = (score) => BANDS.find((b) => score < b.max);
-
-  // Percentiles of the paper's 1,000-household simulation.
-  const PERCENTILES = [
-    [0, 16.270], [10, 48.402], [25, 67.569], [50, 82.043],
-    [75, 87.687], [90, 91.354], [95, 92.966], [100, 97.235]
-  ];
-  const SIM_MIN = PERCENTILES[0][1];
-  const SIM_MAX = PERCENTILES[PERCENTILES.length - 1][1];
-
-  // Linear interpolation between the published percentiles (an approximation).
-  function percentileOf(score) {
-    if (score <= SIM_MIN) return 0;
-    if (score >= SIM_MAX) return 100;
-    for (let i = 1; i < PERCENTILES.length; i++) {
-      const [p0, s0] = PERCENTILES[i - 1];
-      const [p1, s1] = PERCENTILES[i];
-      if (score <= s1) return p0 + ((score - s0) / (s1 - s0)) * (p1 - p0);
-    }
-    return 100;
-  }
+  const AVERAGE_LATE = 8.2;
 
   // What-if scenarios built from the same formulas.
   function levers(inp, base) {
@@ -169,7 +166,7 @@ const HFRI = (() => {
 
   return {
     scoreSavings, scoreDTI, scoreDSTI, scoreEC, scoreCV,
-    compute, BANDS, bandFor, percentileOf, SIM_MIN, SIM_MAX, levers, shock
+    compute, WEIGHTS, WEIGHTS_V1, BANDS, bandFor, AVERAGE_LATE, levers, shock
   };
 })();
 
@@ -201,59 +198,46 @@ function initPage() {
   const val = (id) => parseNum($(id).value);
 
   function safeUrl(u) {
-    return typeof u === 'string' && /^(https?:\/\/|mailto:)/i.test(u.trim()) ? u.trim() : '';
+    if (typeof u !== 'string') return '';
+    const t = u.trim();
+    // Full web links, email links, or a file sitting next to this page.
+    return /^(https?:\/\/|mailto:)/i.test(t) || /^[\w.-]+\.pdf$/i.test(t) ? t : '';
   }
 
   /* ---------- band segments and rulers ---------- */
-  const SEGMENTS = [
-    { key: 'very-low', from: 0, to: 60 },
-    { key: 'low', from: 60, to: 65 },
-    { key: 'transition', from: 65, to: 70 },
-    { key: 'high', from: 70, to: 75 },
-    { key: 'very-high', from: 75, to: 100 }
-  ];
+  // Result ruler: segment widths follow the score scale (0 to 100).
   const segmentsHTML = () =>
-    SEGMENTS.map((s) => `<span class="seg seg--${s.key}" style="width:${s.to - s.from}%"></span>`).join('');
+    HFRI.BANDS.map((b) => `<span class="seg seg--${b.key}" style="width:${Math.min(b.max, 100) - b.from}%"></span>`).join('');
 
-  const TICKS = [
-    { v: 16.27, name: 'lowest', row: 'up' },
-    { v: 48.40, name: '10th percentile', row: 'down' },
-    { v: 67.57, name: '25th percentile', row: 'up', minor: true },
-    { v: 82.04, name: 'median', row: 'down', median: true },
-    { v: 91.35, name: '90th percentile', row: 'up', minor: true },
-    { v: 97.24, name: 'highest', row: 'down', end: true }
-  ];
-
+  // Hero ruler: segment widths follow the share of U.S. families in each band (SCF 2025).
   function buildHeroRuler() {
-    const ticks = TICKS.map((t) => {
-      const cls = ['tick', 'tick--' + t.row];
-      if (t.minor) cls.push('tick--minor');
-      if (t.median) cls.push('tick--median');
-      if (t.end) cls.push('tick--end');
-      return `<div class="${cls.join(' ')}" style="left:${t.v}%"><span class="tick-label"><b>${t.v.toFixed(1)}</b>${t.name}</span></div>`;
+    const segs = HFRI.BANDS.map((b) =>
+      `<span class="seg seg--${b.key}" style="width:${b.share}%"></span>`).join('');
+    let cum = 0;
+    const ticks = HFRI.BANDS.slice(0, -1).map((b, i) => {
+      cum += b.share;
+      const row = i % 2 === 0 ? 'up' : 'down';
+      return `<div class="tick tick--${row}" style="left:${cum.toFixed(1)}%"><span class="tick-label"><b>${b.max}</b>score</span></div>`;
     }).join('');
-    const summary = 'Simulated HFRI scores: lowest 16.3, 10th percentile 48.4, 25th percentile 67.6, median 82.0, 90th percentile 91.4, highest 97.2.';
+    const summary = 'Share of U.S. families in each HFRI band, SCF 2025: ' +
+      HFRI.BANDS.map((b) => b.label + ' ' + b.share.toFixed(1) + '%').join(', ') + '.';
     $('hero-ruler').innerHTML =
-      `<div class="ruler hero-ruler" role="img" aria-label="${summary}"><div class="ruler-bar">${segmentsHTML()}</div>${ticks}</div>`;
+      `<div class="ruler hero-ruler" role="img" aria-label="${summary}"><div class="ruler-bar">${segs}</div>${ticks}</div>`;
 
-    const legendItems = [
-      ['very-low', 'Under 60: very low'],
-      ['low', '60 to 65: low'],
-      ['transition', '65 to 70: transition zone'],
-      ['high', '70 to 75: high'],
-      ['very-high', '75 and above: very high']
-    ];
-    $('hero-legend').innerHTML = legendItems
-      .map(([k, t]) => `<li><span class="swatch seg--${k}"></span>${t}</li>`).join('');
+    $('hero-legend').innerHTML = HFRI.BANDS.map((b) => {
+      const range = b.max === Infinity ? b.from + ' to 100' : b.from + ' to ' + b.max;
+      return `<li><span class="swatch seg--${b.key}"></span><span><b>${range}: ${b.label}.</b> ` +
+        `${b.share.toFixed(1)}% of families, ${b.late2025.toFixed(1)}% of them badly behind on a loan</span></li>`;
+    }).join('');
   }
 
   function buildResultRuler() {
-    const axis = [0, 60, 65, 70, 75, 100].map((n) => {
+    const axis = [0, 35, 55, 70, 100].map((n) => {
       const cls = 'axis-num' + (n === 0 ? ' is-first' : n === 100 ? ' is-last' : '');
       return `<span class="${cls}" style="left:${n}%">${n}</span>`;
     }).join('');
     $('result-ruler').innerHTML =
-      `<div class="ruler" role="img" aria-label="Your score on the 0 to 100 HFRI scale with the five bands">` +
+      `<div class="ruler" role="img" aria-label="Your score on the 0 to 100 HFRI scale with the four risk bands">` +
       `<div class="ruler-bar">${segmentsHTML()}</div>` +
       `<div class="ruler-marker" id="marker" style="left:0%"><span class="ruler-marker-label" id="marker-label">You</span></div>` +
       axis + `</div>`;
@@ -429,11 +413,10 @@ function initPage() {
     requestAnimationFrame(step);
   }
 
-  function percentileText(score) {
-    if (score < HFRI.SIM_MIN) return 'Lower than every one of the 1,000 simulated households.';
-    if (score > HFRI.SIM_MAX) return 'Higher than every one of the 1,000 simulated households.';
-    return 'Higher than roughly ' + Math.round(HFRI.percentileOf(score)) +
-      '% of the 1,000 simulated households. This compares against the model, not against real families.';
+  function bandEvidence(band) {
+    return 'About ' + band.share.toFixed(1) + '% of U.S. families score in this band. In 2025, ' + band.late2025.toFixed(1) +
+      '% of them were two months or more behind on a loan payment (average: ' + HFRI.AVERAGE_LATE.toFixed(1) + '%). ' +
+      'Of families in this band in 2007, ' + band.late2009.toFixed(1) + '% fell newly behind by 2009.';
   }
 
   function render(fromSubmit) {
@@ -462,8 +445,10 @@ function initPage() {
     animateScore(r.total);
     const band = HFRI.bandFor(r.total);
     $('band-label').textContent = band.label;
-    $('band-text').textContent = band.text + ' These bands are provisional and come from the paper\u2019s simulation.';
-    $('percentile-text').textContent = percentileText(r.total);
+    $('band-text').textContent = band.text;
+    $('percentile-text').textContent = bandEvidence(band);
+    $('v1-text').textContent = 'With the original equal weights (Version 1) this household would score ' +
+      r.totalV1.toFixed(1) + '.';
     placeMarker(r.total);
 
     // notices
@@ -476,10 +461,13 @@ function initPage() {
     $('notices').innerHTML = notices.map((n) => `<li>${n}</li>`).join('');
 
     // dimensions
+    // The dimension that costs the most points once weights are applied.
     const dims = { S: r.S, D: r.D, E: r.E, X: r.X };
-    const weakest = Object.keys(dims).reduce((a, b) => (dims[b] < dims[a] ? b : a));
+    const lost = (k) => HFRI.WEIGHTS[k] * (100 - dims[k]);
+    const weakest = Object.keys(dims).reduce((a, b) => (lost(b) > lost(a) ? b : a));
     Object.keys(dims).forEach((k) => {
       $('dim-' + k + '-score').textContent = Math.round(dims[k]);
+      $('dim-' + k + '-weight').textContent = Math.round(HFRI.WEIGHTS[k] * 100) + '% of the score';
       $('dim-' + k + '-fill').style.width = clamp(dims[k], 0, 100) + '%';
       document.querySelector(`.dims li[data-dim="${k}"]`).classList.toggle('is-weakest', k === weakest);
     });
@@ -538,7 +526,7 @@ function initPage() {
     }
 
     $('shock-out').innerHTML =
-      `<div class="shock-row"><h4>Liquidity test (the paper\u2019s method)</h4>` +
+      `<div class="shock-row"><h4>Liquidity test (the ONS-style test from Version 1)</h4>` +
       `<p>A ${what} for ${plural(months, 'month')} costs ${money(s.cost)}. Liquid savings of ${money(inp.liquid)} cover ${ratioText} of it.</p>` +
       `<div class="cover-track"><div class="cover-fill${s.covered ? '' : ' is-short'}" style="width:${barWidth}%"></div></div>` +
       `<p class="shock-status">${liquidityStatus}</p></div>` +
@@ -573,13 +561,14 @@ function initPage() {
     if (!r) return '';
     const band = HFRI.bandFor(r.total);
     return [
-      'HFRI score: ' + r.total.toFixed(1) + ' / 100 (' + band.label + ')',
+      'HFRI score (Version 2): ' + r.total.toFixed(1) + ' / 100 (' + band.label + ')',
+      'Original equal-weight score (Version 1): ' + r.totalV1.toFixed(1),
       'Savings Strength ' + Math.round(r.S) + ', Debt Sustainability ' + Math.round(r.D) +
         ', Emergency Coverage ' + Math.round(r.E) + ', Expense Stability ' + Math.round(r.X),
       'Inputs: income ' + money(inp.income) + '/month, spending ' + money(inp.spending) + '/month, essential ' +
         money(inp.essential) + '/month, liquid savings ' + money(inp.liquid) + ', debt ' + money(inp.debt) +
         ', repayments ' + money(inp.debtService) + '/month, spending CV ' + inp.cv.toFixed(2),
-      'Model: Household Financial Resilience Index by Vivaan Agarwal. Calibrated on simulated households and not validated on real outcomes. Not financial advice.'
+      'Model: Household Financial Resilience Index, Version 2, by Vivaan Agarwal. Weights 5/30/55/10 and bands tested on U.S. Survey of Consumer Finances data. Not financial advice.'
     ].join('\n');
   }
 
@@ -615,9 +604,13 @@ function initPage() {
 
     const paper = safeUrl(CONFIG.links.paper);
     const code = safeUrl(CONFIG.links.code);
+    const paperV1 = safeUrl(CONFIG.links.paperV1);
+    const notebookV1 = safeUrl(CONFIG.links.notebookV1);
     const arbor = safeUrl(CONFIG.links.arbor);
-    rows.push(row('Research paper', paper ? link(paper, 'Read the paper') : pending('To be added')));
-    rows.push(row('Code', code ? link(code, 'Open the notebook') : pending('To be added')));
+    rows.push(row('Research paper', paper ? link(paper, 'Read the Version 2 paper') : pending('To be added')));
+    rows.push(row('Code', code ? link(code, 'Version 2 analysis on GitHub') : pending('To be added')));
+    if (paperV1) rows.push(row('Version 1 paper', link(paperV1, 'Read the original paper')));
+    if (notebookV1) rows.push(row('Version 1 code', link(notebookV1, 'Open the simulation notebook')));
     rows.push(row('Arbor', arbor ? link(arbor, 'Visit Arbor') : pending('To be added')));
     $('contact-list').innerHTML = rows.join('');
 

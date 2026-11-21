@@ -1,210 +1,122 @@
-Household Financial Resilience Index (HFRI)
+# HFRI Calculator: Household Financial Resilience Index
 
-A quantitative framework for measuring a household’s ability to absorb financial shocks while continuing to meet essential financial obligations.
+**How big a financial shock can your household absorb?**
 
-Overview
+The Household Financial Resilience Index (HFRI) gives a household one score from 0 to 100. The score shows how well the household could cope with a job loss, a pay cut, a medical bill or any other sudden hit to its finances. A higher score means a household that is better able to absorb a shock.
 
-The Household Financial Resilience Index (HFRI) is a transparent mathematical index that combines four dimensions of household financial health:
+This calculator uses **Version 2** of the index. Its weights and score bands come from tests on more than 12,000 real families in the U.S. Federal Reserve's Survey of Consumer Finances.
 
-1. Savings Strength
-2. Debt Sustainability
-3. Emergency Coverage
-4. Expense Stability
+---
 
-Each dimension is converted into a 0–100 score using calibrated mathematical functions. The four scores are then combined to produce a final HFRI score from 0 to 100.
+## How to use it
 
-The research question underlying the project is:
+1. Open the calculator page (`index.html`) in any web browser.
+2. Enter your household's **monthly** figures in rupees:
+   - **Take-home income** after tax.
+   - **Average monthly spending**, not counting loan repayments.
+   - **How much your spending changes from month to month.** You can pick a description, or switch to *Last six months* and enter each month's spending.
+   - **Essential monthly spending**: the part you could not skip, such as rent, food, utilities, school fees, transport and insurance.
+   - **Liquid savings**: money you could reach within a few days, such as bank balances, cash and liquid funds. Do not count property, gold or long-term investments.
+   - **Total outstanding debt** and **monthly loan repayments** (EMIs and minimum card payments). Leave these blank if you have no debt.
+3. Your score updates as you type. You can also click one of the example households to see how the calculator works.
 
-Can a transparent mathematical index combining savings, debt, emergency liquidity, and expenditure stability provide a meaningful measure of household financial resilience?
+**Your privacy:** everything is calculated inside your browser. Nothing you type is sent anywhere or saved.
 
-HFRI Structure
+---
 
-The index uses equal weighting across the four dimensions:
+## What you get
 
-HFRI = 0.25S + 0.25D + 0.25E + 0.25X
+- **Your HFRI score** (0 to 100) and the **risk band** it falls in.
+- **What the band means in real life**: how many families score in that band, and how often those families fell behind on loan payments.
+- **Your Version 1 score**: the score with the original equal weights, shown for comparison.
+- **Four part scores**, with the part that costs you the most points highlighted.
+- **What would move your score most**: what-if examples, such as adding a month of savings or paying down a quarter of your debt.
+- **A stress test**: what happens if your income falls, or your spending rises, by a chosen amount for a chosen number of months.
+- **Scoring curves**: where each of your numbers lands on its curve.
+- **Copy a summary** or **Print / save as PDF** to keep your result.
 
-where:
+---
 
-* S = Savings Strength
-* D = Debt Sustainability
-* E = Emergency Coverage
-* X = Expense Stability
+## What the score means
 
-Debt sustainability itself combines two indicators:
+| Score | Band | Share of U.S. families | Badly behind on a loan (2025) | Newly badly behind by 2009 |
+|---|---|---|---|---|
+| 0–35 | **High risk** | 13.4% | 20.8% | 15.1% |
+| 35–55 | **Elevated risk** | 30.0% | 12.6% | 8.4% |
+| 55–70 | **Moderate risk** | 15.8% | 7.2% | 4.9% |
+| 70–100 | **Low risk** | 40.8% | 1.3% | 1.0% |
 
-D = 0.40D_{DTI} + 0.60D_{DSTI}
+"Badly behind" means two months or more late on a loan payment. On average, 8.2% of U.S. families were badly behind. The band cut-offs are where that risk falls to twice the average (35), the average (55) and half the average (70).
 
-Indicators
+In the 2007–09 test, a family in the High-risk band was about 15 times more likely to fall into serious trouble than a family in the Low-risk band.
 
-Dimension	Indicator
-Savings Strength	Savings Rate
-Debt Sustainability	Debt-to-Income Ratio (DTI)
-Debt Sustainability	Debt-Service-to-Income Ratio (DSTI)
-Emergency Coverage	Months of Essential Expenses Covered
-Expense Stability	Coefficient of Variation (CV)
+---
 
-Core formulas
+## How the score is built
 
-Savings Rate
+The score combines four parts. Each part is first scored from 0 to 100:
 
-SR = \frac{Y-C}{Y}
+| Part | What it asks | Measured by | Weight |
+|---|---|---|---|
+| **Savings Strength** | Do you spend less than you earn? | (Income − Spending) ÷ Income | 5% |
+| **Debt Sustainability** | Are your loans manageable? | Debt ÷ yearly income (40%) and yearly repayments ÷ yearly income (60%) | 30% |
+| **Emergency Coverage** | How long could your cash last? | Liquid savings ÷ essential monthly spending | 55% |
+| **Expense Stability** | Is your spending predictable? | How much monthly spending swings around its average | 10% |
 
-Debt-to-Income Ratio
+```
+HFRI = 0.05 × Savings + 0.30 × Debt + 0.55 × Emergency + 0.10 × Stability
+```
 
-DTI = \frac{D_b}{Y}
+**Why these weights?** Version 1 gave each part 25% because there was no real-world data yet. Version 2 tested all 1,770 weight combinations against real financial trouble. The tests showed two things:
 
-Debt-Service-to-Income Ratio
+- **Cash savings explain who is in trouble now.** A family with money in the bank is rarely behind on its payments.
+- **Debt explains who will get into trouble later.** Families with heavy repayments in 2007 were much more likely to fall behind during the 2008 crisis.
 
-DSTI = \frac{D_s}{Y}
+The new weights balance these two findings. They beat the original equal weights in all ten tests on families they had never seen before.
 
-Emergency Coverage
+<details>
+<summary>The exact scoring formulas</summary>
 
-EC = \frac{L}{E_m}
+| Part | Formula |
+|---|---|
+| Savings | `100 × (1 − e^(−5.89681 × (savings rate + 0.10)))`, or 0 if the savings rate is −10% or lower |
+| Debt-to-income | `100 × e^(−0.0573534 × DTI^2.13509)` |
+| Debt service-to-income | `−521.456 × DSTI² + 9.082 × DSTI + 100.005`, kept between 0 and 100 |
+| Emergency | `100 × (1 − e^(−0.37028 × months^0.901391))` |
+| Stability | `100 × e^(−3.13957 × CV^1.30837)` |
 
-Expense Coefficient of Variation
+These curves are the same as in Version 1. Interactive versions are on Desmos: [Savings](https://www.desmos.com/calculator/viw3r7j9pn) · [Debt-to-income](https://www.desmos.com/calculator/sm6ui1oaan) · [Debt service](https://www.desmos.com/calculator/tnir0duni6) · [Emergency](https://www.desmos.com/calculator/5xr0tuvzbk) · [Stability](https://www.desmos.com/calculator/xvnar7ksid)
 
-CV = \frac{\sigma_C}{\bar C}
+</details>
 
-where Y is income, C is expenditure, D_b is debt balance, D_s is annual debt service, L is liquid savings, and E_m is essential monthly expenditure.
+---
 
-Mathematical Model
+## Things to keep in mind
 
-Each indicator is transformed using a calibrated scoring function.
+- **The evidence is American.** The weights and bands were tested on U.S. families. The index uses ratios, so it works with rupee figures, but it has not yet been tested on Indian household data.
+- **A score predicts. It does not cause.** A low score is a warning sign. It does not prove that raising your score would prevent trouble.
+- **The 2009 test covers one crisis.** A different kind of shock, such as prices rising quickly, could change how much savings and debt matter.
+- **This is not financial advice.** Use the score to understand where your household is strong or weak, not as a final verdict.
 
-Savings
+---
 
-S(SR)=100(1-e^{-5.89681(SR+0.10)})
+## Research papers
 
-for SR>-0.10, with scores below this threshold set to 0.
+- **Version 2 (current):** [Household Financial Resilience Index: Version 2, From Simulated Households to Real Ones](Household_Financial_Resilience_Index_Version_2.pdf)
+- **Version 2 analysis code:** [github.com/agarwalvivaan09-ai/HFRIV2](https://github.com/agarwalvivaan09-ai/HFRIV2)
+- **Version 1 (original):** [Household Financial Resilience Index](Household_Financial_Resiliance_Index_Vivaan_Agarwal%20(1).pdf)
 
-Debt-to-Income
+---
 
-D_{DTI}=100e^{-0.0573534(DTI)^{2.13509}}
+## Author
 
-Debt-Service-to-Income
+**Vivaan Agarwal**, La Martiniere for Boys, Kolkata
 
-D_{DSTI}=-521.45598(DSTI)^2+9.08245(DSTI)+100.00523
+- Website: https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/
+- GitHub: https://github.com/agarwalvivaan09-ai
 
-with scores constrained to the 0–100 range.
+Feedback, corrections and questions are welcome.
 
-Emergency Coverage
+## License
 
-E(EC)=100(1-e^{-0.37028EC^{0.901391}})
-
-Expense Stability
-
-X(CV)=100e^{-3.13957CV^{1.30837}}
-
-The functions were calibrated against predefined anchor points and fitted to produce smooth, interpretable scoring curves.
-
-Calibration
-
-The model was tested against calibration points representing different levels of financial strength.
-
-Examples include:
-
-* Savings rate: −10% → 0, 0% → 50, 30% → 95
-* DTI: 0 → 100, 3 → 55, 6 → 5
-* DSTI: 0 → 100, 0.30 → 55, 0.40 → 20
-* Emergency coverage: 0 months → 0, 3 months → 65, 12 months → 96
-* Expense CV: 0 → 100, 0.33 → 50, 1.00 → 3
-
-The resulting curve fits produced high R^2 values across all five scoring functions.
-
-Simulation
-
-The model was tested using a synthetic dataset of:
-
-* 1,000 households
-* 12 months
-* 12,000 household-month observations
-* Randomized income, expenditure, savings, debt, liquidity and spending volatility
-* A fixed random seed of 42 for reproducibility
-
-The simulation incorporated both positive and negative monthly cash-flow outcomes, borrowing, debt servicing, savings accumulation and borrowing constraints.
-
-Results
-
-Under the baseline equal-weight specification:
-
-Statistic	HFRI
-Mean	75.84
-Standard deviation	16.24
-Minimum	16.27
-10th percentile	48.40
-Median	82.04
-90th percentile	91.35
-Maximum	97.24
-
-The model’s components showed different relationships with the final index, reflecting the fact that financial resilience is multidimensional rather than determined by a single indicator.
-
-Sensitivity Analysis
-
-The research tested alternative weights between 10% and 40% for each dimension.
-
-The resulting HFRI rankings remained highly correlated with the baseline equal-weight model. Across the tested specifications, rank correlations remained above 0.97, indicating that moderate changes to the weighting structure did not substantially alter household ordering in the simulation.
-
-This supports the robustness of the index to reasonable changes in the weighting scheme, but does not establish that equal weighting is uniquely correct.
-
-External Benchmarking
-
-The model was compared with an ONS-style financial-resilience benchmark based on the ability to withstand an income shock.
-
-The simulation produced:
-
-* HFRI–benchmark Pearson correlation: 0.873
-* HFRI–benchmark Spearman correlation: 0.734
-* Benchmark resilience rate: 75.9%
-
-The comparison is treated as benchmarking and consistency analysis rather than definitive external validation.
-
-The research also subjected households to simulated income and expenditure shocks to examine how HFRI behaved under financial stress.
-
-Interpretation
-
-The model suggests a broad transition in simulated shock-absorption capacity around the 65–70 HFRI range, with households above approximately 70 generally displaying stronger simulated resilience.
-
-These ranges are model-based interpretations, not universal real-world thresholds.
-
-
-
-Reproducibility
-
-The simulation uses a fixed random seed of 42. The repository is intended to make the mathematical framework, calibration process and simulation methodology transparent and reproducible.
-
-The project is based on synthetic household data rather than personally identifiable household financial records.
-
-Limitations
-
-The research has several important limitations:
-
-* The household dataset is simulated rather than observed.
-* The calibration points involve researcher-defined assumptions.
-* Equal weighting is a modelling choice rather than an empirically established optimum.
-* The index does not capture every dimension of household financial health.
-* Household income and expenditure dynamics are simplified.
-* The ONS comparison is a benchmark, not independent predictive validation.
-* The expense-shock test is researcher-defined.
-* HFRI scores should not be interpreted as individual financial advice or a definitive measure of financial wellbeing.
-
-Research Paper
-
-The complete methodology, mathematical derivations, calibration, simulation results, sensitivity analysis and benchmarking are available in the research paper:
-
-Household Financial Resilience Index — Vivaan Agarwal⁠￼
-
-Author
-
-Vivaan Agarwal
-
-Independent Researcher
-Economics · Finance · Quantitative Analysis
-
-* Website: https://agarwalvivaan09-ai.github.io/vivaan-agarwal-website-3.0/
-* GitHub: https://github.com/agarwalvivaan09-ai
-
-License
-
-The code in this repository is released under the MIT License.
-
-See LICENSE for details.
+MIT. See [LICENSE](LICENSE).
